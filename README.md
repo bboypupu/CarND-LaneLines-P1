@@ -14,43 +14,109 @@ To complete the project, two files will be submitted: a file containing project 
 
 To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
 
-
-Creating a Great Writeup
----
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
-
-1. Describe the pipeline
-
-2. Identify any shortcomings
-
-3. Suggest possible improvements
-
-We encourage using images in your writeup to demonstrate how your pipeline works.  
-
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
-
-
-The Project
 ---
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+**Finding Lane Lines on the Road**
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/83ec35ee-1e02-48a5-bdb7-d244bd47c2dc/lessons/8c82408b-a217-4d09-b81d-1bda4c6380ef/concepts/4f1870e0-3849-43e4-b670-12e6f2d4b7a7) if you haven't already.
+The goals / steps of this project are the following:
+* Make a pipeline that finds lane lines on the road
+* Reflect on your work in a written report
 
-**Step 2:** Open the code in a Jupyter Notebook
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out [Udacity's free course on Anaconda and Jupyter Notebooks](https://classroom.udacity.com/courses/ud1111) to get started.
+[//]: # (Image References)
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+[image1]: ./examples/grayscale.jpg "Grayscale"
 
-`> jupyter notebook`
+ 
+---
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+## Reflection
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+### The pipeline I used was based on the logistic and consisted of 6 steps:
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+(Original test images:)
 
+<img src="./test_images/solidYellowCurve.jpg " width="200">
+<img src="./test_images/solidYellowLeft.jpg" width="200">
+<img src="./test_images/solidYellowCurve2.jpg" width="200">
+<img src="./test_images/solidWhiteRight.jpg" width="200">
+<img src="./test_images/whiteCarLaneSwitch.jpg" width="200">
+<img src="./test_images/solidWhiteCurve.jpg" width="200">
+
+---
+
+1.  Convert the input image into grayscale for feature extraction steps later.
+
+<img src="./test_images_output/grayscale_solidYellowCurve.jpg" width="200">
+<img src="./test_images_output/grayscale_solidYellowLeft.jpg" width="200">
+<img src="./test_images_output/grayscale_solidYellowCurve2.jpg" width="200">
+<img src="./test_images_output/grayscale_solidWhiteRight.jpg" width="200">
+<img src="./test_images_output/grayscale_whiteCarLaneSwitch.jpg" width="200">
+<img src="./test_images_output/grayscale_solidWhiteCurve.jpg" width="200">
+
+---
+
+2.  Blur the grayscale image with Gaussian filter to eliminate the noise.
+
+<img src="./test_images_output/gaussian_blur_solidYellowCurve.jpg" width="200">
+<img src="./test_images_output/gaussian_blur_solidYellowLeft.jpg" width="200">
+<img src="./test_images_output/gaussian_blur_solidYellowCurve2.jpg" width="200">
+<img src="./test_images_output/gaussian_blur_solidWhiteRight.jpg" width="200">
+<img src="./test_images_output/gaussian_blur_whiteCarLaneSwitch.jpg" width="200">
+<img src="./test_images_output/gaussian_blur_solidWhiteCurve.jpg" width="200">
+
+---
+
+3.  Use Canny edge detector to find the edges in the image where the gradient are large.
+
+<img src="./test_images_output/canny_solidYellowCurve.jpg" width="200">
+<img src="./test_images_output/canny_solidYellowLeft.jpg" width="200">
+<img src="./test_images_output/canny_solidYellowCurve2.jpg" width="200">
+<img src="./test_images_output/canny_solidWhiteRight.jpg" width="200">
+<img src="./test_images_output/canny_whiteCarLaneSwitch.jpg" width="200">
+<img src="./test_images_output/canny_solidWhiteCurve.jpg" width="200">
+
+---
+
+4.  Mask the region of interest with a polygon.
+
+<img src="./test_images_output/masked_solidYellowCurve.jpg" width="200">
+<img src="./test_images_output/masked_solidYellowLeft.jpg" width="200">
+<img src="./test_images_output/masked_solidYellowCurve2.jpg" width="200">
+<img src="./test_images_output/masked_solidWhiteRight.jpg" width="200">
+<img src="./test_images_output/masked_whiteCarLaneSwitch.jpg" width="200">
+<img src="./test_images_output/masked_solidWhiteCurve.jpg" width="200">
+
+---
+
+5.  With Hough transfer, we can find the lines within the edges. While our target is to find the left and right line of the lane, we can filter the lines with the slope of them. Then avarage the middle points and slopes of the lines we found after the filter, we got the left and right line we wanted. To make the result more smooth and also to prevent the situation of finding no solid line from the current image, I use 50% weight to modify the current result with the previous ones. 
+
+<img src="./test_images_output/hough_lines_solidYellowCurve.jpg" width="200">
+<img src="./test_images_output/hough_lines_solidYellowLeft.jpg" width="200">
+<img src="./test_images_output/hough_lines_solidYellowCurve2.jpg" width="200">
+<img src="./test_images_output/hough_lines_solidWhiteRight.jpg" width="200">
+<img src="./test_images_output/hough_lines_whiteCarLaneSwitch.jpg" width="200">
+<img src="./test_images_output/hough_lines_solidWhiteCurve.jpg" width="200">
+
+---
+
+5.  For demonstrate the lane line we found, merge the lines and the original image together with weight, then we'll have a delicated image with two lines detected from the image.
+
+<img src="./test_images_output/result_solidYellowCurve.jpg" width="200">
+<img src="./test_images_output/result_solidYellowLeft.jpg" width="200">
+<img src="./test_images_output/result_solidYellowCurve2.jpg" width="200">
+<img src="./test_images_output/result_solidWhiteRight.jpg" width="200">
+<img src="./test_images_output/result_whiteCarLaneSwitch.jpg" width="200">
+<img src="./test_images_output/result_solidWhiteCurve.jpg" width="200">
+
+---
+
+### 2. Identify potential shortcomings with your current pipeline
+
+
+One potential shortcoming would be what would happen when the line color blend in to the background (road) or too many noise. While we can see in the challenge part, the detection ability of my pipeline would be affected when the road color changes and the lines on both sides were not different from the background enough to have clear edges; and the shadow of the tree would also cause huge noise to the detection.
+
+
+### 3. Suggest possible improvements to your pipeline
+
+A possible improvement would be to make more contrast to the region of interest.
